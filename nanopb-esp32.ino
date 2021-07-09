@@ -1,9 +1,9 @@
-#include "protofiles/test.pb.h"
+#include <pb.h>
+#include <pb_common.h>
+#include <pb_decode.h>
+#include <pb_encode.h>
 
-#include "pb_common.h"
-#include "pb.h"
-#include "pb_encode.h"
-#include "pb_decode.h"
+#include "protofiles/test.pb.h"
 
 bool encode_string(pb_ostream_t *stream, const pb_field_t *field, void * const *arg)
 {
@@ -46,14 +46,13 @@ void setup() {
   /* ENCODING */
   {
     TestMessage message = TestMessage_init_zero;
-    message.test_string.funcs.encode = encode_string;
-  
-    pb_ostream_t ostream = pb_ostream_from_buffer(buffer, sizeof(buffer));
-  
+    
     message.test_number = 540;
     message.test_number2 = 123;
     message.test_number3 = 456;
+    message.test_string.funcs.encode = encode_string;
   
+    pb_ostream_t ostream = pb_ostream_from_buffer(buffer, sizeof(buffer));
     status = pb_encode(&ostream, TestMessage_fields, &message);
   
     if (!status)
